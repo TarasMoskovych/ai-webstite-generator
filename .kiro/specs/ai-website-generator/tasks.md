@@ -227,7 +227,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Handle generation failures with placeholder
     - _Requirements: 5.2, 5.7_
 
-  - [~] 10.6 Implement website list sorting and pagination
+  - [x] 10.6 Implement website list sorting and pagination
     - Query websites sorted by createdAt descending
     - Implement page size of 12 items
     - Calculate total pages
