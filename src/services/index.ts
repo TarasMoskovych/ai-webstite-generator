@@ -63,3 +63,11 @@ export type {
   ExtractionSuccess,
   ExtractionFailure,
 } from './generation';
+
+// HTML Sanitization Service
+export {
+  sanitize,
+  HtmlSanitizer,
+  htmlSanitizer,
+} from './htmlSanitizer';
+export type { HtmlSanitizerService } from './htmlSanitizer';

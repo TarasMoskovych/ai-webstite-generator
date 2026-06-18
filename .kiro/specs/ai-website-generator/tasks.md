@@ -164,7 +164,7 @@ This implementation plan covers building a full-stack AI-powered website generat
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Website Generation API Route
-  - [~] 8.1 Create generate API route with auth middleware
+  - [x] 8.1 Create generate API route with auth middleware
     - Create `app/api/generate/route.ts`
     - Implement POST handler for generation requests
     - Add authentication middleware to verify Firebase token
@@ -184,8 +184,8 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Test authentication requirement
     - Test error response handling
 
-- [ ] 9. HTML Sanitizer Service
-  - [~] 9.1 Implement HTML sanitization for preview security
+- [x] 9. HTML Sanitizer Service
+  - [x] 9.1 Implement HTML sanitization for preview security
     - Create `services/htmlSanitizer.ts`
     - Remove script tags from HTML
     - Remove inline event handlers (onclick, onerror, onload, etc.)
