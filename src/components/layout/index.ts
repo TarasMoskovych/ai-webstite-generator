@@ -5,3 +5,9 @@
 
 export { ThemeProvider, useTheme } from './ThemeProvider';
 export type { Theme, ResolvedTheme, ThemeContextValue, ThemeProviderProps } from './ThemeProvider';
+
+export { ThemeToggle } from './ThemeToggle';
+export type { ThemeToggleProps } from './ThemeToggle';
+
+export { AppHeader } from './AppHeader';
+export type { AppHeaderProps } from './AppHeader';

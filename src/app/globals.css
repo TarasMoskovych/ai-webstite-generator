@@ -1,6 +1,22 @@
 @import 'tailwindcss';
 
 /*
+ * Tailwind CSS 4 Dark Mode Configuration
+ *
+ * Configure dark mode to use the 'class' strategy instead of the default
+ * prefers-color-scheme media query. This allows manual theme toggling via
+ * adding/removing the 'dark' class on the document root element.
+ *
+ * The selector (&:where(.dark, .dark *)) ensures:
+ * - Dark styles apply when .dark class is on the element itself
+ * - Dark styles apply to all descendants of .dark elements
+ * - Using :where() keeps specificity low for easier overrides
+ *
+ * Requirements: 19.1, 19.2, 19.3, 19.4
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
  * AI Website Generator - Global Styles
  *
  * Dark theme support (Requirements 19.1, 19.4):
@@ -10,7 +26,10 @@
  */
 
 :root {
-  /* Light theme (default) */
+  /*
+   * Light theme (default)
+   * All color combinations meet WCAG AA contrast requirements (4.5:1 minimum)
+   */
   --background: #ffffff;
   --foreground: #171717;
   --card: #ffffff;
@@ -20,35 +39,39 @@
   --secondary: #f4f4f5;
   --secondary-foreground: #18181b;
   --muted: #f4f4f5;
-  --muted-foreground: #71717a;
+  --muted-foreground: #525252; /* Adjusted from #71717a for better contrast (7:1 ratio) */
   --accent: #f4f4f5;
   --accent-foreground: #18181b;
-  --destructive: #ef4444;
+  --destructive: #dc2626; /* Adjusted from #ef4444 for WCAG AA compliance (4.6:1 ratio) */
   --destructive-foreground: #ffffff;
   --border: #e4e4e7;
   --input: #e4e4e7;
   --ring: #2563eb;
+  --radius: 0.5rem;
 }
 
 .dark {
-  /* Dark theme */
+  /*
+   * Dark theme
+   * All color combinations meet WCAG AA contrast requirements (4.5:1 minimum)
+   */
   --background: #0a0a0a;
   --foreground: #fafafa;
   --card: #18181b;
   --card-foreground: #fafafa;
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
+  --primary: #60a5fa; /* Adjusted from #3b82f6 for better contrast on dark backgrounds */
+  --primary-foreground: #0a0a0a; /* Dark text on light blue for WCAG AA compliance */
   --secondary: #27272a;
   --secondary-foreground: #fafafa;
   --muted: #27272a;
   --muted-foreground: #a1a1aa;
   --accent: #27272a;
   --accent-foreground: #fafafa;
-  --destructive: #dc2626;
-  --destructive-foreground: #fafafa;
+  --destructive: #f87171; /* Adjusted from #dc2626 for better visibility on dark backgrounds */
+  --destructive-foreground: #0a0a0a; /* Dark text on light red for WCAG AA compliance */
   --border: #27272a;
   --input: #27272a;
-  --ring: #3b82f6;
+  --ring: #60a5fa;
 }
 
 @theme inline {
@@ -71,28 +94,42 @@
   --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius: var(--radius);
 }
 
 /* Support system preference detection (Requirement 19.1) */
+/*
+ * This media query provides a fallback for the initial page load before
+ * JavaScript hydration applies the theme class. Once ThemeProvider loads,
+ * it will add either 'light' or 'dark' class to the document root,
+ * and CSS variable overrides in .dark will take precedence.
+ *
+ * The :root:not(.light):not(.dark) selector ensures this only applies
+ * when no theme class has been set yet by JavaScript.
+ */
 @media (prefers-color-scheme: dark) {
-  :root:not(.light) {
+  :root:not(.light):not(.dark) {
+    /*
+     * Dark theme applied via system preference (before JS hydration)
+     * Uses same WCAG AA compliant colors as .dark class
+     */
     --background: #0a0a0a;
     --foreground: #fafafa;
     --card: #18181b;
     --card-foreground: #fafafa;
-    --primary: #3b82f6;
-    --primary-foreground: #ffffff;
+    --primary: #60a5fa;
+    --primary-foreground: #0a0a0a;
     --secondary: #27272a;
     --secondary-foreground: #fafafa;
     --muted: #27272a;
     --muted-foreground: #a1a1aa;
     --accent: #27272a;
     --accent-foreground: #fafafa;
-    --destructive: #dc2626;
-    --destructive-foreground: #fafafa;
+    --destructive: #f87171;
+    --destructive-foreground: #0a0a0a;
     --border: #27272a;
     --input: #27272a;
-    --ring: #3b82f6;
+    --ring: #60a5fa;
   }
 }
 

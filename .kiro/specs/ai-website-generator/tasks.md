@@ -83,7 +83,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Test session persistence
     - Test error handling
 
-- [~] 4. Checkpoint - Ensure all tests pass
+- [ ] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 5. Input Validation Services
@@ -160,7 +160,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - **Property 17: Generated Title Constraints**
     - **Validates: Requirements 11.1, 11.2, 11.3**
 
-- [~] 7. Checkpoint - Ensure all tests pass
+- [ ] 7. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 8. Website Generation API Route
@@ -246,7 +246,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - **Property 12: Deletion Removes Website**
     - **Validates: Requirements 7.2**
 
-- [~] 11. Checkpoint - Ensure all tests pass
+- [ ] 11. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 12. Download Service
@@ -277,10 +277,10 @@ This implementation plan covers building a full-stack AI-powered website generat
     - **Property 18: Code Editor Modifications Preserved in Download**
     - **Validates: Requirements 10.5**
 
-- [~] 13. Checkpoint - Ensure all tests pass
+- [ ] 13. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 14. Theme System
+- [x] 14. Theme System
   - [x] 14.1 Create ThemeProvider and theme context
     - Create `components/layout/ThemeProvider.tsx`
     - Implement theme context with light/dark/system options
@@ -289,21 +289,21 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Apply theme class to document root
     - _Requirements: 19.1, 19.2, 19.3_
 
-  - [~] 14.2 Create ThemeToggle component
+  - [x] 14.2 Create ThemeToggle component
     - Create `components/layout/ThemeToggle.tsx`
     - Display toggle button in header
     - Support light/dark/system options
     - Update theme context on selection
     - _Requirements: 19.2, 19.3_
 
-  - [~] 14.3 Configure Tailwind CSS dark theme
+  - [x] 14.3 Configure Tailwind CSS dark theme
     - Set up dark mode variant in tailwind.config
     - Define color palette for light and dark themes
     - Ensure WCAG AA contrast compliance
     - _Requirements: 19.4, 19.5_
 
 - [ ] 15. UI Components - Core
-  - [~] 15.1 Create AppHeader component with user profile
+  - [x] 15.1 Create AppHeader component with user profile
     - Create `components/layout/AppHeader.tsx`
     - Display user profile picture and name
     - Include theme toggle button
@@ -311,20 +311,20 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Handle missing profile picture with default avatar
     - _Requirements: 15.1, 15.2, 15.4_
 
-  - [~] 15.2 Create UserProfileMenu component
+  - [ ] 15.2 Create UserProfileMenu component
     - Create `components/auth/UserProfileMenu.tsx`
     - Display dropdown on profile click
     - Show user email and sign out option
     - _Requirements: 15.3_
 
-  - [~] 15.3 Create ErrorMessage component
+  - [ ] 15.3 Create ErrorMessage component
     - Create `components/ErrorMessage.tsx`
     - Display error message with dismiss button
     - Include optional retry button
     - Style for visibility without being intrusive
     - _Requirements: 12.1, 12.3, 12.5_
 
-  - [~] 15.4 Create LoadingIndicator component
+  - [ ] 15.4 Create LoadingIndicator component
     - Create `components/LoadingIndicator.tsx`
     - Display animated loading indicator
     - Show current generation stage
@@ -333,7 +333,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - _Requirements: 8.1, 8.2, 8.3, 8.6_
 
 - [ ] 16. UI Components - Input
-  - [~] 16.1 Create InputModeSelector component
+  - [ ] 16.1 Create InputModeSelector component
     - Create `components/InputModeSelector.tsx`
     - Display text and screenshot mode options with icons
     - Highlight active mode visually
@@ -344,7 +344,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - **Property 14: Input Mode Exclusivity**
     - **Validates: Requirements 9.6**
 
-  - [~] 16.3 Create TextInput component
+  - [ ] 16.3 Create TextInput component
     - Create `components/TextInput.tsx`
     - Display textarea for description input
     - Show character count and limit
@@ -352,7 +352,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Include submit button
     - _Requirements: 9.4, 1.1, 1.6_
 
-  - [~] 16.4 Create ScreenshotUpload component
+  - [ ] 16.4 Create ScreenshotUpload component
     - Create `components/ScreenshotUpload.tsx`
     - Implement drag-and-drop file upload area
     - Implement click-to-browse functionality
@@ -360,7 +360,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Show validation errors
     - _Requirements: 9.5, 2.1, 2.2, 2.3_
 
-  - [~] 16.5 Create mode switch confirmation dialog
+  - [ ] 16.5 Create mode switch confirmation dialog
     - Create confirmation dialog component
     - Display when switching modes with existing content
     - Provide confirm and cancel options
@@ -375,11 +375,11 @@ This implementation plan covers building a full-stack AI-powered website generat
     - **Property 13: Input Preservation on Cancel or Error**
     - **Validates: Requirements 8.5, 12.4**
 
-- [~] 17. Checkpoint - Ensure all tests pass
+- [ ] 17. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 18. UI Components - Preview and Editor
-  - [~] 18.1 Create PreviewRenderer component with viewport modes
+  - [ ] 18.1 Create PreviewRenderer component with viewport modes
     - Create `components/PreviewRenderer.tsx`
     - Render website in isolated iframe
     - Implement viewport mode selector (desktop/tablet/mobile)
@@ -388,7 +388,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Sanitize HTML before rendering
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-  - [~] 18.2 Create CodeEditor component with Monaco
+  - [ ] 18.2 Create CodeEditor component with Monaco
     - Install Monaco Editor package
     - Create `components/CodeEditor.tsx`
     - Implement tabs for HTML and CSS
@@ -397,7 +397,7 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Debounce preview updates on edit
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 19.6_
 
-  - [~] 18.3 Create DownloadDialog component
+  - [ ] 18.3 Create DownloadDialog component
     - Create `components/DownloadDialog.tsx`
     - Display format options (single HTML/ZIP)
     - Trigger download on selection
@@ -405,21 +405,21 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Handle timeout errors
     - _Requirements: 4.1, 4.4, 4.5, 4.6_
 
-  - [~] 18.4 Create DeleteConfirmDialog component
+  - [ ] 18.4 Create DeleteConfirmDialog component
     - Create `components/DeleteConfirmDialog.tsx`
     - Display website title in confirmation
     - Provide confirm and cancel buttons
     - _Requirements: 7.1, 7.3_
 
 - [ ] 19. UI Components - Website Management
-  - [~] 19.1 Create WebsiteCard component
+  - [ ] 19.1 Create WebsiteCard component
     - Create `components/WebsiteCard.tsx`
     - Display thumbnail, title, date, input type
     - Enable inline title editing
     - Include delete button
     - _Requirements: 6.2, 11.4, 11.7_
 
-  - [~] 19.2 Create Pagination component
+  - [ ] 19.2 Create Pagination component
     - Create `components/Pagination.tsx`
     - Display page numbers
     - Include next/previous buttons
@@ -427,81 +427,81 @@ This implementation plan covers building a full-stack AI-powered website generat
     - _Requirements: 6.5_
 
 - [ ] 20. Page Implementation - Generation
-  - [~] 20.1 Create generation page with input modes
+  - [ ] 20.1 Create generation page with input modes
     - Create `app/generate/page.tsx` as protected route
     - Integrate InputModeSelector component
     - Integrate TextInput and ScreenshotUpload components
     - Handle input validation before submission
     - _Requirements: 9.1, 9.2, 9.4, 9.5_
 
-  - [~] 20.2 Implement generation flow with loading states
+  - [ ] 20.2 Implement generation flow with loading states
     - Handle generate button click
     - Show LoadingIndicator during generation
     - Implement cancel functionality
     - Preserve input on cancel or error
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-  - [~] 20.3 Implement generation success flow
+  - [ ] 20.3 Implement generation success flow
     - Receive generated website from API
     - Save to repository automatically
     - Navigate to website preview page
     - _Requirements: 5.1, 1.4_
 
 - [ ] 21. Page Implementation - Dashboard
-  - [~] 21.1 Create dashboard page with website list
+  - [ ] 21.1 Create dashboard page with website list
     - Create `app/dashboard/page.tsx` as protected route
     - Fetch user's websites from repository
     - Display WebsiteCard components in grid
     - Implement loading state
     - _Requirements: 6.1, 6.2, 6.4_
 
-  - [~] 21.2 Implement pagination for website list
+  - [ ] 21.2 Implement pagination for website list
     - Integrate Pagination component
     - Fetch pages on navigation
     - Display 12 items per page
     - _Requirements: 6.5_
 
-  - [~] 21.3 Implement empty state and error handling
+  - [ ] 21.3 Implement empty state and error handling
     - Display empty state message with CTA
     - Display error message with retry on fetch failure
     - _Requirements: 6.6, 6.7_
 
-  - [~] 21.4 Implement website deletion flow
+  - [ ] 21.4 Implement website deletion flow
     - Show DeleteConfirmDialog on delete click
     - Call repository delete on confirm
     - Update list without page refresh
     - Handle deletion errors
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [~] 22. Checkpoint - Ensure all tests pass
+- [ ] 22. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 23. Page Implementation - Website Preview
-  - [~] 23.1 Create website preview/editor page
+  - [ ] 23.1 Create website preview/editor page
     - Create `app/website/[id]/page.tsx` as protected route
     - Fetch website data by ID
     - Integrate PreviewRenderer component
     - Integrate CodeEditor component
     - _Requirements: 3.1, 10.1_
 
-  - [~] 23.2 Implement code editing and preview sync
+  - [ ] 23.2 Implement code editing and preview sync
     - Update preview on code changes (1s debounce)
     - Display syntax error indicators
     - _Requirements: 10.3, 10.4_
 
-  - [~] 23.3 Implement save and download functionality
+  - [ ] 23.3 Implement save and download functionality
     - Auto-save modifications to repository
     - Integrate DownloadDialog component
     - Ensure downloads include editor modifications
     - _Requirements: 10.5, 10.6, 10.7, 4.1_
 
-  - [~] 23.4 Handle preview rendering errors
+  - [ ] 23.4 Handle preview rendering errors
     - Display error message for invalid HTML/CSS
     - Provide access to code editor for fixes
     - _Requirements: 3.7_
 
 - [ ] 24. Page Implementation - Public View
-  - [~] 24.1 Create public website view page
+  - [ ] 24.1 Create public website view page
     - Create `app/view/[id]/page.tsx` as public route
     - Fetch website data by ID
     - Render full-page website without app UI
@@ -509,14 +509,14 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Set meta tags including title
     - _Requirements: 16.1, 16.2, 16.3, 16.4_
 
-  - [~] 24.2 Implement 404 handling and visibility checks
+  - [ ] 24.2 Implement 404 handling and visibility checks
     - Display 404 page for non-existent websites
     - Check public visibility flag
     - Require auth for private websites
     - _Requirements: 16.5, 16.6, 16.7_
 
 - [ ] 25. Error Handling Integration
-  - [~] 25.1 Implement global error handling utilities
+  - [ ] 25.1 Implement global error handling utilities
     - Create error handling utilities
     - Map API errors to user-friendly messages
     - Implement retry logic (max 3 attempts)
@@ -529,11 +529,11 @@ This implementation plan covers building a full-stack AI-powered website generat
     - Test timeout error handling
     - Test retry logic
 
-- [~] 26. Final Checkpoint - Ensure all tests pass
+- [ ] 26. Final Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 27. Testing Infrastructure Setup
-  - [~] 27.1 Set up testing framework with Vitest and fast-check
+  - [ ] 27.1 Set up testing framework with Vitest and fast-check
     - Install Vitest, @testing-library/react, fast-check
     - Configure Vitest for Next.js
     - Set up test utilities and mocks
