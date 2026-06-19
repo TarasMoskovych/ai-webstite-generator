@@ -59,10 +59,13 @@ Generate complete websites from text descriptions or screenshots using Claude AI
    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
    NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
-   # Firebase Admin
-   FIREBASE_ADMIN_PROJECT_ID=your_project_id
-   FIREBASE_ADMIN_CLIENT_EMAIL=your_service_account_email
-   FIREBASE_ADMIN_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+   # Firebase Admin (Option 1 - Recommended for Vercel)
+   FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"...","private_key":"...","client_email":"..."}
+
+   # Firebase Admin (Option 2 - Legacy, individual vars)
+   # FIREBASE_ADMIN_PROJECT_ID=your_project_id
+   # FIREBASE_ADMIN_CLIENT_EMAIL=your_service_account_email
+   # FIREBASE_ADMIN_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
    ```
 
 4. Run the development server:

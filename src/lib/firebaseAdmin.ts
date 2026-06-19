@@ -7,7 +7,7 @@
  * Requirements: 14.1 - Authentication required for protected routes
  */
 
-import { initializeApp, getApps, cert, App } from 'firebase-admin/app';
+import { initializeApp, getApps, cert, App, ServiceAccount } from 'firebase-admin/app';
 import { getAuth, Auth } from 'firebase-admin/auth';
 
 // Cached instances
@@ -16,10 +16,16 @@ let adminAuthInstance: Auth | null = null;
 
 /**
  * Checks if Firebase Admin SDK credentials are configured.
+ * Supports either full JSON or individual env vars.
  *
- * @returns true if all required environment variables are present
+ * @returns true if credentials are available
  */
 function hasFirebaseAdminCredentials(): boolean {
+  // Option 1: Full service account JSON (recommended)
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    return true;
+  }
+  // Option 2: Individual env vars (legacy)
   return !!(
     process.env.FIREBASE_ADMIN_PROJECT_ID &&
     process.env.FIREBASE_ADMIN_CLIENT_EMAIL &&
@@ -28,13 +34,62 @@ function hasFirebaseAdminCredentials(): boolean {
 }
 
 /**
- * Initialize Firebase Admin SDK (singleton pattern, lazy initialization)
- * Uses FIREBASE_ADMIN_* environment variables for configuration.
+ * Parses the service account from environment variables.
+ * Supports two configuration methods:
  *
- * Required environment variables:
- * - FIREBASE_ADMIN_PROJECT_ID: Firebase project ID
- * - FIREBASE_ADMIN_CLIENT_EMAIL: Service account email
- * - FIREBASE_ADMIN_PRIVATE_KEY: Service account private key (with \n for newlines)
+ * 1. FIREBASE_SERVICE_ACCOUNT - Full JSON (recommended)
+ *    Set this to the entire service account JSON file content
+ *
+ * 2. Individual env vars (legacy):
+ *    - FIREBASE_ADMIN_PROJECT_ID
+ *    - FIREBASE_ADMIN_CLIENT_EMAIL
+ *    - FIREBASE_ADMIN_PRIVATE_KEY
+ *
+ * @returns ServiceAccount object for Firebase Admin
+ * @throws Error if credentials are missing or invalid
+ */
+function getServiceAccount(): ServiceAccount {
+  // Option 1: Full service account JSON (recommended for Vercel)
+  const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+  if (serviceAccountJson) {
+    try {
+      const parsed = JSON.parse(serviceAccountJson);
+      if (!parsed.project_id || !parsed.client_email || !parsed.private_key) {
+        throw new Error('Missing required fields in service account JSON');
+      }
+      return parsed as ServiceAccount;
+    } catch (e) {
+      throw new Error(
+        `Failed to parse FIREBASE_SERVICE_ACCOUNT: ${e instanceof Error ? e.message : 'Invalid JSON'}`
+      );
+    }
+  }
+
+  // Option 2: Individual env vars (legacy)
+  const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY;
+
+  if (!projectId || !clientEmail || !privateKey) {
+    throw new Error(
+      'Firebase Admin SDK credentials are not configured. ' +
+        'Set FIREBASE_SERVICE_ACCOUNT (recommended) or individual vars: ' +
+        'FIREBASE_ADMIN_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, FIREBASE_ADMIN_PRIVATE_KEY'
+    );
+  }
+
+  // Handle escaped newlines in private key
+  const decodedKey = privateKey.replace(/\\n/g, '\n');
+
+  return {
+    projectId,
+    clientEmail,
+    privateKey: decodedKey,
+  } as ServiceAccount;
+}
+
+/**
+ * Initialize Firebase Admin SDK (singleton pattern, lazy initialization)
  *
  * @returns The Firebase Admin App instance
  * @throws Error if credentials are not configured
@@ -51,26 +106,10 @@ function getFirebaseAdminApp(): App {
     return adminApp;
   }
 
-  // Validate required environment variables
-  const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY;
-
-  if (!projectId || !clientEmail || !privateKey) {
-    throw new Error(
-      'Firebase Admin SDK credentials are not configured. ' +
-        'Required environment variables: ' +
-        'FIREBASE_ADMIN_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL, FIREBASE_ADMIN_PRIVATE_KEY'
-    );
-  }
+  const serviceAccount = getServiceAccount();
 
   adminApp = initializeApp({
-    credential: cert({
-      projectId,
-      clientEmail,
-      // Handle escaped newlines in the private key
-      privateKey: privateKey.replace(/\\n/g, '\n'),
-    }),
+    credential: cert(serviceAccount),
   });
 
   return adminApp;

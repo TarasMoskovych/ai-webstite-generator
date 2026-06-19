@@ -21,10 +21,10 @@ import { processImageForClaude } from '@/services/imageProcessor';
 
 /**
  * Maximum duration for this route in seconds.
- * Vercel Hobby: up to 60s, Pro: up to 300s (5 min)
- * Set to 60s for Hobby plan compatibility.
+ * Vercel Hobby: up to 120s, Pro: up to 300s (5 min)
+ * Set to 120s for Hobby plan compatibility.
  */
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 /**
  * Request types for streaming generation

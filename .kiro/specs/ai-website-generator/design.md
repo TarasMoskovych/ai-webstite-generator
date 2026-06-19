@@ -685,7 +685,12 @@ export const storage = getStorage(app);
 
 The Firebase Admin SDK is used for server-side token verification in API routes. It requires a service account credential.
 
-**Required Environment Variables:**
+**Configuration Options:**
+
+**Option 1: Full Service Account JSON (Recommended for Vercel)**
+- `FIREBASE_SERVICE_ACCOUNT` - The entire service account JSON file content
+
+**Option 2: Individual Environment Variables (Legacy)**
 - `FIREBASE_ADMIN_PROJECT_ID` - Firebase project ID
 - `FIREBASE_ADMIN_CLIENT_EMAIL` - Service account email (e.g., `firebase-adminsdk-xxxxx@project-id.iam.gserviceaccount.com`)
 - `FIREBASE_ADMIN_PRIVATE_KEY` - Service account private key (with `\n` for newlines)
@@ -693,24 +698,35 @@ The Firebase Admin SDK is used for server-side token verification in API routes.
 **How to obtain:**
 1. Go to Firebase Console → Project Settings → Service accounts
 2. Click "Generate new private key"
-3. Extract the values from the downloaded JSON file
+3. For Option 1: Copy the entire JSON content and set as `FIREBASE_SERVICE_ACCOUNT`
+4. For Option 2: Extract the individual values from the downloaded JSON file
 
 ```typescript
 // lib/firebaseAdmin.ts
-import { initializeApp, getApps, cert, App } from 'firebase-admin/app';
+import { initializeApp, getApps, cert, App, ServiceAccount } from 'firebase-admin/app';
 import { getAuth, Auth } from 'firebase-admin/auth';
+
+function getServiceAccount(): ServiceAccount {
+  // Option 1: Full service account JSON (recommended)
+  const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+  if (serviceAccountJson) {
+    return JSON.parse(serviceAccountJson) as ServiceAccount;
+  }
+
+  // Option 2: Individual env vars (legacy)
+  return {
+    projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+  } as ServiceAccount;
+}
 
 function getFirebaseAdminApp(): App {
   if (getApps().length > 0) {
     return getApps()[0];
   }
-
   return initializeApp({
-    credential: cert({
-      projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
+    credential: cert(getServiceAccount()),
   });
 }
 
