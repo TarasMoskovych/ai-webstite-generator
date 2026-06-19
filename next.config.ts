@@ -2,10 +2,10 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /**
-   * Mark packages as external to prevent bundling issues on Vercel.
-   * firebase-admin has ESM/CommonJS compatibility issues with Turbopack.
+   * Forces Next.js to handle the ESM compilation of these packages.
+   * Fixes require() of ES Module errors with firebase-admin dependencies.
    */
-  serverExternalPackages: ['firebase-admin'],
+  transpilePackages: ['firebase-admin', 'jwks-rsa', 'jose'],
 };
 
 export default nextConfig;
