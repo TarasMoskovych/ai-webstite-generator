@@ -52,6 +52,7 @@ import { getErrorMessage, isAppError } from '@/services/errorHandling';
 import { save as saveWebsite } from '@/services/websiteRepository';
 import { generateThumbnail, getPlaceholderThumbnail } from '@/services/thumbnailService';
 import { CreateWebsiteData } from '@/types/website';
+import { createParser } from 'eventsource-parser';
 
 /**
  * Generation page content component
@@ -171,55 +172,6 @@ function GeneratePageContent() {
   const [streamingContent, setStreamingContent] = useState('');
 
   /**
-   * Parse a single SSE event and update state
-   * Returns the result if a 'done' event is received with a result
-   */
-  const processSSEEvent = useCallback((
-    eventType: string,
-    eventData: string,
-    currentResult: { html: string; css: string; title: string } | null
-  ): { html: string; css: string; title: string } | null => {
-    let result = currentResult;
-
-    try {
-      const data = JSON.parse(eventData);
-
-      switch (eventType) {
-        case 'start':
-          setGenerationStage('generating_html');
-          break;
-        case 'text':
-          if (data.content) {
-            setStreamingContent((prev) => prev + data.content);
-            // Update stage based on content
-            if (data.content.includes('```css')) {
-              setGenerationStage('generating_css');
-            } else if (data.content.includes('Title:')) {
-              setGenerationStage('finalizing');
-            }
-          }
-          break;
-        case 'done':
-          if (data.result) {
-            result = data.result;
-          }
-          break;
-        case 'error':
-          throw new Error(data.error || 'Generation failed');
-      }
-    } catch (e) {
-      if (e instanceof SyntaxError) {
-        // JSON parse error, skip this event
-        console.warn('SSE JSON parse error for event:', eventType, 'data:', eventData.slice(0, 100));
-        return result;
-      }
-      throw e;
-    }
-
-    return result;
-  }, []);
-
-  /**
    * Convert file to base64 string
    */
   const fileToBase64 = useCallback((file: File): Promise<string> => {
@@ -268,70 +220,63 @@ function GeneratePageContent() {
       }
 
       const decoder = new TextDecoder();
-      let buffer = '';
       let result: { html: string; css: string; title: string } | null = null;
 
       // Reset streaming content
       setStreamingContent('');
 
+      // Create SSE parser using eventsource-parser library
+      const parser = createParser({
+        onEvent: (event) => {
+          const eventType = event.event;
+          const eventData = event.data;
+
+          if (!eventType || !eventData) return;
+
+          try {
+            const data = JSON.parse(eventData);
+
+            switch (eventType) {
+              case 'start':
+                setGenerationStage('generating_html');
+                break;
+              case 'text':
+                if (data.content) {
+                  setStreamingContent((prev) => prev + data.content);
+                  if (data.content.includes('```css')) {
+                    setGenerationStage('generating_css');
+                  } else if (data.content.includes('Title:')) {
+                    setGenerationStage('finalizing');
+                  }
+                }
+                break;
+              case 'done':
+                if (data.result) {
+                  result = data.result;
+                }
+                break;
+              case 'error':
+                throw new Error(data.error || 'Generation failed');
+            }
+          } catch (e) {
+            if (!(e instanceof SyntaxError)) {
+              throw e;
+            }
+          }
+        },
+      });
+
+      // Read and parse the stream
       while (true) {
         const { done, value } = await reader.read();
 
         if (done) {
-          // Process any remaining complete events in buffer after stream ends
-          if (buffer.trim()) {
-            // SSE events are separated by double newlines
-            const events = buffer.split('\n\n');
-            for (const event of events) {
-              if (!event.trim()) continue;
-
-              const lines = event.split('\n');
-              let eventType = '';
-              let eventData = '';
-
-              for (const line of lines) {
-                if (line.startsWith('event: ')) {
-                  eventType = line.slice(7).trim();
-                } else if (line.startsWith('data: ')) {
-                  eventData = line.slice(6);
-                }
-              }
-
-              if (eventType && eventData) {
-                result = processSSEEvent(eventType, eventData, result);
-              }
-            }
-          }
+          // Consume any remaining buffered data
+          parser.reset({ consume: true });
           break;
         }
 
-        buffer += decoder.decode(value, { stream: true });
-
-        // SSE events are separated by double newlines
-        // Process all complete events (those followed by \n\n)
-        const parts = buffer.split('\n\n');
-        // Keep the last part in buffer (might be incomplete)
-        buffer = parts.pop() || '';
-
-        for (const event of parts) {
-          if (!event.trim()) continue;
-
-          const lines = event.split('\n');
-          let eventType = '';
-          let eventData = '';
-
-          for (const line of lines) {
-            if (line.startsWith('event: ')) {
-              eventType = line.slice(7).trim();
-            } else if (line.startsWith('data: ')) {
-              eventData = line.slice(6);
-            }
-          }
-
-          if (eventType && eventData) {
-            result = processSSEEvent(eventType, eventData, result);
-          }
-        }
+        parser.feed(decoder.decode(value, { stream: true }));
       }
 
       if (!result) {
@@ -340,7 +285,7 @@ function GeneratePageContent() {
 
       return result;
     },
-    [getIdToken, processSSEEvent]
+    [getIdToken]
   );
 
   /**
@@ -377,70 +322,63 @@ function GeneratePageContent() {
       }
 
       const decoder = new TextDecoder();
-      let buffer = '';
       let result: { html: string; css: string; title: string } | null = null;
 
       // Reset streaming content
       setStreamingContent('');
 
+      // Create SSE parser using eventsource-parser library
+      const parser = createParser({
+        onEvent: (event) => {
+          const eventType = event.event;
+          const eventData = event.data;
+
+          if (!eventType || !eventData) return;
+
+          try {
+            const data = JSON.parse(eventData);
+
+            switch (eventType) {
+              case 'start':
+                setGenerationStage('generating_html');
+                break;
+              case 'text':
+                if (data.content) {
+                  setStreamingContent((prev) => prev + data.content);
+                  if (data.content.includes('```css')) {
+                    setGenerationStage('generating_css');
+                  } else if (data.content.includes('Title:')) {
+                    setGenerationStage('finalizing');
+                  }
+                }
+                break;
+              case 'done':
+                if (data.result) {
+                  result = data.result;
+                }
+                break;
+              case 'error':
+                throw new Error(data.error || 'Generation failed');
+            }
+          } catch (e) {
+            if (!(e instanceof SyntaxError)) {
+              throw e;
+            }
+          }
+        },
+      });
+
+      // Read and parse the stream
       while (true) {
         const { done, value } = await reader.read();
 
         if (done) {
-          // Process any remaining complete events in buffer after stream ends
-          if (buffer.trim()) {
-            // SSE events are separated by double newlines
-            const events = buffer.split('\n\n');
-            for (const event of events) {
-              if (!event.trim()) continue;
-
-              const lines = event.split('\n');
-              let eventType = '';
-              let eventData = '';
-
-              for (const line of lines) {
-                if (line.startsWith('event: ')) {
-                  eventType = line.slice(7).trim();
-                } else if (line.startsWith('data: ')) {
-                  eventData = line.slice(6);
-                }
-              }
-
-              if (eventType && eventData) {
-                result = processSSEEvent(eventType, eventData, result);
-              }
-            }
-          }
+          // Consume any remaining buffered data
+          parser.reset({ consume: true });
           break;
         }
 
-        buffer += decoder.decode(value, { stream: true });
-
-        // SSE events are separated by double newlines
-        // Process all complete events (those followed by \n\n)
-        const parts = buffer.split('\n\n');
-        // Keep the last part in buffer (might be incomplete)
-        buffer = parts.pop() || '';
-
-        for (const event of parts) {
-          if (!event.trim()) continue;
-
-          const lines = event.split('\n');
-          let eventType = '';
-          let eventData = '';
-
-          for (const line of lines) {
-            if (line.startsWith('event: ')) {
-              eventType = line.slice(7).trim();
-            } else if (line.startsWith('data: ')) {
-              eventData = line.slice(6);
-            }
-          }
-
-          if (eventType && eventData) {
-            result = processSSEEvent(eventType, eventData, result);
-          }
-        }
+        parser.feed(decoder.decode(value, { stream: true }));
       }
 
       if (!result) {
@@ -449,7 +387,7 @@ function GeneratePageContent() {
 
       return result;
     },
-    [getIdToken, fileToBase64, processSSEEvent]
+    [getIdToken, fileToBase64]
   );
 
   /**
