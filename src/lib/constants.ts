@@ -37,8 +37,12 @@ export const VALIDATION = {
  * Timeout durations in milliseconds
  */
 export const TIMEOUTS = {
-  /** Maximum time for website generation (120 seconds for complex screenshots) */
-  GENERATION: 120_000,
+  /**
+   * Maximum time for website generation (5 minutes / 300 seconds)
+   * This should be less than or equal to the Anthropic SDK timeout in src/lib/claude.ts
+   * Note: Vercel Hobby plan has 120s max, Pro has 300s. Adjust based on your plan.
+   */
+  GENERATION: 300_000,
   /** Maximum time for file download generation (5 seconds) */
   DOWNLOAD: 5_000,
   /** Maximum time for cancel operation (5 seconds) */

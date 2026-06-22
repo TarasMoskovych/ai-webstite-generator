@@ -26,8 +26,9 @@ import type { BeautifyStreamRequest, ReferenceImageMimeType, BeautifyStreamEvent
 /**
  * Maximum duration for this route in seconds.
  * Validates: Requirement 4.11 - THE Beautify_API SHALL have a maximum duration of 120 seconds
+ * Note: Set to 300s (5 min) for local dev. Vercel will cap based on your plan.
  */
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 /**
  * Valid MIME types for reference images

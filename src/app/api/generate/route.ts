@@ -25,9 +25,9 @@ import { ErrorCode } from '@/types/error';
 /**
  * Maximum duration for this route in seconds.
  * Vercel Hobby: up to 120s, Pro: up to 300s (5 min)
- * Set to 120s for Hobby plan compatibility.
+ * Set to 300s - will be capped by your Vercel plan limits.
  */
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 /**
  * Request types for website generation

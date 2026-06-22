@@ -164,14 +164,28 @@ function extractInlineStyles(html: string): string {
 
 /**
  * Extracts and validates the title from the response.
+ * First tries to find "Title: [title]" line, then falls back to <title> tag in HTML.
  * Falls back to a default title if extraction fails or title is invalid.
  *
  * @param response - The raw text response from Claude API
  * @returns The extracted title or a default title with timestamp
  */
 function extractTitle(response: string): string {
+  // First, try to extract from "Title:" line
   const titleMatch = response.match(TITLE_REGEX);
   let title = titleMatch?.[1]?.trim() || '';
+
+  // If no Title: line found, try to extract from HTML <title> tag
+  if (!title) {
+    const htmlTitleMatch = response.match(/<title[^>]*>([^<]+)<\/title>/i);
+    title = htmlTitleMatch?.[1]?.trim() || '';
+  }
+
+  // If still no title, try to extract from first <h1> tag
+  if (!title) {
+    const h1Match = response.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+    title = h1Match?.[1]?.trim() || '';
+  }
 
   // Validate title length
   if (title.length < TITLE_MIN_LENGTH || title.length > TITLE_MAX_LENGTH) {

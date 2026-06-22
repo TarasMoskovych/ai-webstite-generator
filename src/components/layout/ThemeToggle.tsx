@@ -326,7 +326,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
           aria-label="Select theme"
           className="
             absolute right-0 top-full mt-1
-            z-50 min-w-[8rem]
+            z-[100] min-w-[8rem]
             rounded-md border border-border
             bg-popover p-1
             text-popover-foreground

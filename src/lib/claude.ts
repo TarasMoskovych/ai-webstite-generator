@@ -17,9 +17,13 @@ if (!process.env.ANTHROPIC_API_KEY) {
 /**
  * Anthropic client instance configured with API key from environment variables.
  * This client is used for all Claude API interactions including text and vision generation.
+ *
+ * Timeout is set to 5 minutes (300 seconds) to handle complex website generation
+ * that may take longer than the default SDK timeout.
  */
 export const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
+  timeout: 5 * 60 * 1000, // 5 minutes in milliseconds
 });
 
 /**

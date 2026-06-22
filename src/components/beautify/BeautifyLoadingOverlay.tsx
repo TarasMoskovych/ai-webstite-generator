@@ -351,7 +351,7 @@ export function BeautifyLoadingOverlay({
                     ${isCurrent ? 'text-foreground font-medium' : 'text-muted-foreground'}
                   `}
                 >
-                  {stageKey === 'completing' ? 'Complete' : stageKey.charAt(0).toUpperCase() + stageKey.slice(1, -3)}
+                  {stageKey.charAt(0).toUpperCase() + stageKey.slice(1, -3) + 'e'}
                 </span>
               </div>
             );
