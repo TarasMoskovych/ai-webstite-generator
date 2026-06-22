@@ -60,7 +60,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
 - [x] 3. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Implement BeautifyService
+- [x] 4. Implement BeautifyService
   - [x] 4.1 Create beautify prompts
     - Create `src/lib/beautifyPrompts.ts` with `COMPLETION_PROMPT` and `ENHANCEMENT_PROMPT`
     - Include instructions for maintaining consistency, semantic HTML5, accessibility
@@ -74,7 +74,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - Emit proper stream events (start, mode, text, done, error)
     - _Requirements: 2.1, 2.2, 2.3, 3.1, 3.2, 3.3_
 
-  - [-] 4.3 Implement completion mode logic
+  - [x] 4.3 Implement completion mode logic
     - Handle incomplete websites by completing missing sections
     - Maintain existing design style, close unclosed tags, complete truncated text
     - Add generation marker to completed HTML
@@ -169,7 +169,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - Modify screenshot generation to set originalPrompt to null
     - _Requirements: 0.1, 0.3_
 
-- [ ] 8. Implement UI Components - BeautifyButton
+- [x] 8. Implement UI Components - BeautifyButton
   - [x] 8.1 Create BeautifyButton component
     - Create `src/components/beautify/BeautifyButton.tsx`
     - Support primary, secondary, and icon-only variants
@@ -177,18 +177,18 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - Handle loading state with spinner
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-  - [-] 8.2 Write unit tests for BeautifyButton
+  - [x] 8.2 Write unit tests for BeautifyButton
     - Test rendering, variants, loading state, disabled state
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 9. Implement UI Components - BeautifyOptionsDialog
+- [x] 9. Implement UI Components - BeautifyOptionsDialog
   - [x] 9.1 Create BeautifyOptionsDialog component
     - Create `src/components/beautify/BeautifyOptionsDialog.tsx`
     - Display "Quick Beautify" and "Beautify with Reference Image" options
     - Include Cancel button
     - _Requirements: 0.1.1, 0.1.2, 0.1.3, 0.1.9_
 
-  - [-] 9.2 Implement image upload with drag-and-drop
+  - [x] 9.2 Implement image upload with drag-and-drop
     - Support PNG, JPG, JPEG, WebP formats
     - Validate 10MB size limit
     - Show image preview before confirmation
@@ -202,14 +202,14 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - **Property 14: Image Format Acceptance**
     - **Validates: Requirements 0.1.5**
 
-- [ ] 10. Implement UI Components - BeautifyLoadingOverlay
+- [x] 10. Implement UI Components - BeautifyLoadingOverlay
   - [x] 10.1 Create BeautifyLoadingOverlay component
     - Create `src/components/beautify/BeautifyLoadingOverlay.tsx`
     - Display mode indicators: "Analyzing completeness...", "Completing missing sections...", "Enhancing design...", "Finalizing..."
     - Show elapsed time counter
     - _Requirements: 5.5, 5.6, 9.3, 9.7_
 
-  - [-] 10.2 Implement streaming preview
+  - [x] 10.2 Implement streaming preview
     - Show raw streaming content in collapsible preview area
     - Auto-scroll to show latest content
     - _Requirements: 9.1, 9.2_
@@ -308,7 +308,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
 - [x] 15. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 16. Integrate BeautifyButton on Website Preview Page
+- [x] 16. Integrate BeautifyButton on Website Preview Page
   - [x] 16.1 Add BeautifyButton to preview page toolbar
     - Add BeautifyButton alongside Preview and Download buttons
     - _Requirements: 5.1_
