@@ -1027,5 +1027,87 @@ describe('CompletenessDetector', () => {
         { numRuns: 100 }
       );
     });
+
+    /**
+     * Feature: website-beautify, Property 7: Completeness Detection Returns Classification and Issues
+     *
+     * *For any* HTML/CSS input, the Completeness_Detector SHALL return both a classification
+     * ("complete" or "incomplete") and a list of detected issues.
+     *
+     * **Validates: Requirements 1.9**
+     */
+    it('completeness detection returns classification and issues (Property 7)', () => {
+      // Generator for arbitrary HTML strings
+      const arbitraryHtml = fc.string({ minLength: 0, maxLength: 1000 });
+
+      // Generator for arbitrary CSS strings
+      const arbitraryCss = fc.string({ minLength: 0, maxLength: 500 });
+
+      fc.assert(
+        fc.property(arbitraryHtml, arbitraryCss, (html, css) => {
+          // Call the completeness detector with arbitrary inputs
+          const result = detectCompleteness(html, css);
+
+          // Property 1: Result MUST have a 'status' field that is either "complete" or "incomplete"
+          expect(result).toHaveProperty('status');
+          expect(['complete', 'incomplete']).toContain(result.status);
+
+          // Property 2: Result MUST have an 'issues' field that is an array
+          expect(result).toHaveProperty('issues');
+          expect(Array.isArray(result.issues)).toBe(true);
+
+          // Property 3: Result MUST have an 'isComplete' boolean that matches the status
+          expect(result).toHaveProperty('isComplete');
+          expect(typeof result.isComplete).toBe('boolean');
+          // Verify consistency: isComplete should match status
+          if (result.status === 'complete') {
+            expect(result.isComplete).toBe(true);
+          } else {
+            expect(result.isComplete).toBe(false);
+          }
+
+          // Property 4: Result MUST have all required fields in CompletenessResult interface
+          expect(result).toHaveProperty('hasGenerationMarker');
+          expect(typeof result.hasGenerationMarker).toBe('boolean');
+
+          expect(result).toHaveProperty('missingElements');
+          expect(Array.isArray(result.missingElements)).toBe(true);
+          // Verify missingElements only contains valid structural elements
+          for (const element of result.missingElements) {
+            expect(['header', 'main', 'footer']).toContain(element);
+          }
+
+          expect(result).toHaveProperty('truncationIssues');
+          expect(Array.isArray(result.truncationIssues)).toBe(true);
+          // Verify all truncation issues are strings
+          for (const issue of result.truncationIssues) {
+            expect(typeof issue).toBe('string');
+          }
+
+          // Property 5: All issues should be strings
+          for (const issue of result.issues) {
+            expect(typeof issue).toBe('string');
+          }
+
+          // Property 6: When complete, there should be no issues
+          // (generation marker present OR all structural elements present with no truncation)
+          if (result.isComplete) {
+            expect(result.issues).toHaveLength(0);
+            expect(result.missingElements).toHaveLength(0);
+            expect(result.truncationIssues).toHaveLength(0);
+          }
+
+          // Property 7: When incomplete without generation marker,
+          // issues should contain entries for missing elements and truncation
+          if (!result.isComplete && !result.hasGenerationMarker) {
+            // The total issues should be the sum of missing element issues and truncation issues
+            const expectedIssueCount =
+              result.missingElements.length + result.truncationIssues.length;
+            expect(result.issues.length).toBe(expectedIssueCount);
+          }
+        }),
+        { numRuns: 100 }
+      );
+    });
   });
 });

@@ -19,7 +19,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - Define `BeautifyEventType` and `BeautificationMode` types
     - _Requirements: 4.4, 4.5, 4.7_
 
-- [ ] 2. Implement CompletenessDetector service
+- [x] 2. Implement CompletenessDetector service
   - [x] 2.1 Create CompletenessDetector with generation marker detection
     - Create `src/services/beautify/completenessDetector.ts`
     - Implement `GENERATION_MARKER` constant (`<!-- GENERATION_COMPLETE -->`)
@@ -53,7 +53,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - Ensure analysis completes within 2 seconds
     - _Requirements: 1.1, 1.9_
 
-  - [~] 2.8 Write property test for completeness result format (Property 7)
+  - [x] 2.8 Write property test for completeness result format (Property 7)
     - **Property 7: Completeness Detection Returns Classification and Issues**
     - **Validates: Requirements 1.9**
 
@@ -67,7 +67,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - Support originalPrompt and referenceImage context in prompts
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9, 11.10, 11.11_
 
-  - [~] 4.2 Create BeautifyService with streaming support
+  - [x] 4.2 Create BeautifyService with streaming support
     - Create `src/services/beautify/beautifyService.ts`
     - Implement `beautifyWebsiteStream` async generator function
     - Support AbortSignal for cancellation

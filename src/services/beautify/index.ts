@@ -10,3 +10,9 @@ export {
   detectCompleteness,
   default as completenessDetector,
 } from './completenessDetector';
+
+// Beautify Service
+export {
+  beautifyWebsiteStream,
+  default as beautifyService,
+} from './beautifyService';
