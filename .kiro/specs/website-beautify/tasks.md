@@ -227,7 +227,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 12. Implement UI Components - PreviewComparison
-  - [~] 12.1 Create PreviewComparison component
+  - [x] 12.1 Create PreviewComparison component
     - Create `src/components/beautify/PreviewComparison.tsx`
     - Display two side-by-side iframe previews
     - Label left as "Original" and right as "Beautified"
@@ -260,7 +260,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - _Requirements: 7.10_
 
 - [ ] 13. Implement UI Components - SaveOptionsDialog
-  - [~] 13.1 Create SaveOptionsDialog component
+  - [x] 13.1 Create SaveOptionsDialog component
     - Create `src/components/beautify/SaveOptionsDialog.tsx`
     - Display "Replace Original" and "Save as New" options
     - Show success confirmation on save
@@ -283,7 +283,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - **Validates: Requirements 8.5**
 
 - [ ] 14. Implement error handling
-  - [~] 14.1 Create error message mapping
+  - [x] 14.1 Create error message mapping
     - Map error types to user-friendly messages
     - Network error: "Unable to connect. Please check your internet connection."
     - Timeout: "Beautification timed out. The website may be too complex. Please try again."
