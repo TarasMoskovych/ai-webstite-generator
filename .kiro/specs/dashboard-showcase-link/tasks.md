@@ -34,14 +34,14 @@ This implementation adds a Community Showcase navigation link to the dashboard p
     - Ensure comfortable touch interaction on mobile devices
     - _Requirements: 4.4_
 
-- [ ] 2. Integrate ShowcaseLink into dashboard page header
-  - [~] 2.1 Update page header layout structure
+- [x] 2. Integrate ShowcaseLink into dashboard page header
+  - [x] 2.1 Update page header layout structure
     - Modify the header flex container to accommodate three elements
     - Add `flex-wrap` and `gap-4` for responsive layout
     - Separate title section from action buttons section
     - _Requirements: 1.4_
 
-  - [~] 2.2 Position ShowcaseLink between title and New Website button
+  - [x] 2.2 Position ShowcaseLink between title and New Website button
     - Create action buttons container with `flex items-center gap-2`
     - Place ShowcaseLink before the "New Website" button in DOM order
     - Maintain visual hierarchy with secondary styling for showcase link
