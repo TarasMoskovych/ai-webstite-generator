@@ -34,6 +34,48 @@ export const maxDuration = 120;
 const VALID_MIME_TYPES: ReferenceImageMimeType[] = ['image/png', 'image/jpeg', 'image/webp'];
 
 /**
+ * Validates that a string is well-formed base64.
+ * Checks for valid base64 characters and proper padding.
+ *
+ * @param str - The string to validate
+ * @returns true if the string is valid base64, false otherwise
+ */
+function isValidBase64(str: string): boolean {
+  // Empty string is not valid base64 for an image
+  if (!str || str.length === 0) {
+    return false;
+  }
+
+  // Base64 regex: only valid base64 characters with optional padding
+  // Valid characters: A-Z, a-z, 0-9, +, /
+  // Padding: = at the end (0, 1, or 2)
+  const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+
+  // Check if string contains only valid base64 characters
+  if (!base64Regex.test(str)) {
+    return false;
+  }
+
+  // Base64 string length must be a multiple of 4 (with padding)
+  if (str.length % 4 !== 0) {
+    return false;
+  }
+
+  // Try to decode to verify it's valid
+  try {
+    // Use atob in browser or Buffer in Node.js
+    if (typeof atob === 'function') {
+      atob(str);
+    } else {
+      Buffer.from(str, 'base64');
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Verifies the Firebase ID token from the Authorization header.
  * Validates: Requirements 4.2, 4.3
  *
@@ -104,6 +146,11 @@ function validateRequest(body: unknown): { valid: true; data: BeautifyStreamRequ
   if (request.referenceImage !== undefined) {
     if (typeof request.referenceImage !== 'string') {
       return { valid: false, error: 'referenceImage must be a base64 encoded string' };
+    }
+
+    // Validate base64 format
+    if (!isValidBase64(request.referenceImage)) {
+      return { valid: false, error: 'referenceImage must be a valid base64 encoded string' };
     }
 
     // If referenceImage is provided, referenceImageMimeType must also be provided
