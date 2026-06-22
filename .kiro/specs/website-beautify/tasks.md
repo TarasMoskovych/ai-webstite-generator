@@ -177,7 +177,7 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - Handle loading state with spinner
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-  - [~] 8.2 Write unit tests for BeautifyButton
+  - [-] 8.2 Write unit tests for BeautifyButton
     - Test rendering, variants, loading state, disabled state
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
@@ -188,17 +188,17 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - Include Cancel button
     - _Requirements: 0.1.1, 0.1.2, 0.1.3, 0.1.9_
 
-  - [~] 9.2 Implement image upload with drag-and-drop
+  - [-] 9.2 Implement image upload with drag-and-drop
     - Support PNG, JPG, JPEG, WebP formats
     - Validate 10MB size limit
     - Show image preview before confirmation
     - _Requirements: 0.1.4, 0.1.5, 0.1.6, 0.1.7_
 
-  - [~] 9.3 Write property test for image size validation (Property 13)
+  - [x] 9.3 Write property test for image size validation (Property 13)
     - **Property 13: Image Upload Size Validation**
     - **Validates: Requirements 0.1.6**
 
-  - [~] 9.4 Write property test for image format acceptance (Property 14)
+  - [x] 9.4 Write property test for image format acceptance (Property 14)
     - **Property 14: Image Format Acceptance**
     - **Validates: Requirements 0.1.5**
 
@@ -209,17 +209,17 @@ The implementation follows the existing Next.js App Router architecture with Typ
     - Show elapsed time counter
     - _Requirements: 5.5, 5.6, 9.3, 9.7_
 
-  - [~] 10.2 Implement streaming preview
+  - [-] 10.2 Implement streaming preview
     - Show raw streaming content in collapsible preview area
     - Auto-scroll to show latest content
     - _Requirements: 9.1, 9.2_
 
-  - [~] 10.3 Implement cancel functionality
+  - [x] 10.3 Implement cancel functionality
     - Provide cancel button
     - Abort ongoing request within 5 seconds
     - _Requirements: 9.4, 9.5_
 
-  - [~] 10.4 Write property test for cancellation behavior (Property 18)
+  - [x] 10.4 Write property test for cancellation behavior (Property 18)
     - **Property 18: Cancellation Preserves Original Content**
     - **Validates: Requirements 9.6**
 

@@ -5,19 +5,26 @@
  * Requirements:
  * - 5.5: Display a loading overlay with status messages during beautification
  * - 5.6: Show the detected Beautification_Mode
+ * - 9.1: Display raw streaming content in a collapsible preview area
+ * - 9.2: Auto-scroll streaming preview to show latest content
  * - 9.3: Display elapsed time counter
+ * - 9.4: Provide cancel button to abort the beautification process
+ * - 9.5: Abort ongoing API request within 5 seconds when cancel is clicked
  * - 9.7: Display stage indicators
  *
  * This component:
  * 1. Shows an animated spinner to indicate active processing
  * 2. Displays the current beautification stage as human-readable text
  * 3. Shows a progress indicator for visual feedback
- * 4. Uses Tailwind CSS for styling
- * 5. Follows existing component patterns in the codebase
+ * 4. Provides a collapsible streaming content preview with auto-scroll
+ * 5. Provides an optional cancel button to abort the beautification process
+ * 6. Uses Tailwind CSS for styling
+ * 7. Follows existing component patterns in the codebase
  */
 
 'use client';
 
+import { useEffect, useRef } from 'react';
 import type { BeautifyLoadingStage } from '@/types/beautify';
 
 /**
@@ -28,6 +35,14 @@ export interface BeautifyLoadingOverlayProps {
   stage: BeautifyLoadingStage;
   /** Whether the overlay is visible */
   isVisible: boolean;
+  /** Raw streaming content for preview (optional) */
+  streamingContent?: string;
+  /** Whether the streaming preview is expanded (optional) */
+  isPreviewExpanded?: boolean;
+  /** Toggle preview expansion handler (optional) */
+  onTogglePreview?: () => void;
+  /** Optional cancel callback - displays cancel button when provided (Requirement 9.4, 9.5) */
+  onCancel?: () => void;
 }
 
 /**
@@ -109,6 +124,48 @@ function CheckIcon({ className }: { className?: string }) {
 }
 
 /**
+ * X icon for cancel button
+ */
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  );
+}
+
+/**
+ * Chevron icon for expand/collapse toggle
+ */
+function ChevronIcon({ className, direction = 'down' }: { className?: string; direction?: 'up' | 'down' }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`${className} transition-transform duration-200 ${direction === 'up' ? 'rotate-180' : ''}`}
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+/**
  * BeautifyLoadingOverlay component
  * Displays a loading overlay during beautification with stage indicators and progress
  *
@@ -116,12 +173,29 @@ function CheckIcon({ className }: { className?: string }) {
  * <BeautifyLoadingOverlay
  *   stage="enhancing"
  *   isVisible={isBeautifying}
+ *   streamingContent={content}
+ *   isPreviewExpanded={expanded}
+ *   onTogglePreview={() => setExpanded(!expanded)}
  * />
  */
 export function BeautifyLoadingOverlay({
   stage,
   isVisible,
+  streamingContent = '',
+  isPreviewExpanded = false,
+  onTogglePreview,
+  onCancel,
 }: BeautifyLoadingOverlayProps) {
+  // Ref for auto-scrolling the streaming preview (Requirement 9.2)
+  const previewRef = useRef<HTMLPreElement>(null);
+
+  // Auto-scroll to bottom when streaming content updates (Requirement 9.2)
+  useEffect(() => {
+    if (isPreviewExpanded && previewRef.current && streamingContent) {
+      previewRef.current.scrollTop = previewRef.current.scrollHeight;
+    }
+  }, [streamingContent, isPreviewExpanded]);
+
   if (!isVisible) {
     return null;
   }
@@ -130,6 +204,7 @@ export function BeautifyLoadingOverlay({
   const stageDescription = STAGE_DESCRIPTIONS[stage];
   const progressPercentage = getProgressPercentage(stage);
   const currentStageIndex = STAGE_ORDER.indexOf(stage);
+  const hasStreamingContent = streamingContent.length > 0;
 
   return (
     <div
@@ -150,7 +225,7 @@ export function BeautifyLoadingOverlay({
           p-8 rounded-lg
           bg-card border border-border
           shadow-lg
-          min-w-[320px] max-w-md w-full mx-4
+          min-w-[320px] max-w-lg w-full mx-4
         "
         role="status"
         aria-live="polite"
@@ -241,7 +316,7 @@ export function BeautifyLoadingOverlay({
         </div>
 
         {/* Stage indicators */}
-        <div className="w-full flex items-center justify-between">
+        <div className="w-full flex items-center justify-between mb-4">
           {STAGE_ORDER.map((stageKey, index) => {
             const isCompleted = index < currentStageIndex;
             const isCurrent = index === currentStageIndex;
@@ -282,6 +357,82 @@ export function BeautifyLoadingOverlay({
             );
           })}
         </div>
+
+        {/* Streaming Preview Section (Requirement 9.1) */}
+        {hasStreamingContent && onTogglePreview && (
+          <div className="w-full">
+            {/* Toggle button */}
+            <button
+              type="button"
+              onClick={onTogglePreview}
+              className="
+                w-full flex items-center justify-between
+                px-3 py-2 rounded-md
+                text-sm text-muted-foreground
+                hover:bg-muted/50
+                transition-colors duration-150
+              "
+              aria-expanded={isPreviewExpanded}
+              aria-controls="streaming-preview"
+            >
+              <span className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                Streaming content
+              </span>
+              <ChevronIcon
+                className="h-4 w-4"
+                direction={isPreviewExpanded ? 'up' : 'down'}
+              />
+            </button>
+
+            {/* Collapsible preview area (Requirement 9.1) */}
+            {isPreviewExpanded && (
+              <pre
+                id="streaming-preview"
+                ref={previewRef}
+                className="
+                  mt-2 p-3
+                  w-full max-h-48
+                  overflow-auto
+                  rounded-md
+                  bg-muted/30 border border-border
+                  text-xs text-muted-foreground
+                  font-mono whitespace-pre-wrap break-words
+                "
+                aria-label="Streaming beautification content"
+              >
+                {streamingContent || 'Waiting for content...'}
+              </pre>
+            )}
+          </div>
+        )}
+
+        {/* Cancel button - displayed when onCancel callback is provided (Requirement 9.4) */}
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="
+              mt-6
+              inline-flex items-center justify-center gap-2
+              rounded-md px-4 py-2
+              text-sm font-medium
+              bg-secondary
+              text-secondary-foreground
+              hover:bg-secondary/80
+              focus-visible:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-ring
+              focus-visible:ring-offset-2
+              focus-visible:ring-offset-background
+              transition-colors
+            "
+            aria-label="Cancel beautification"
+          >
+            <XIcon className="h-4 w-4" aria-hidden="true" />
+            Cancel
+          </button>
+        )}
 
         {/* Screen reader announcement */}
         <span className="sr-only">
