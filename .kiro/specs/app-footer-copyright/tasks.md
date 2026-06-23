@@ -67,7 +67,7 @@ The implementation is organized into:
   - Ask the user if questions arise
 
 - [ ] 4. Write unit tests
-  - [~] 4.1 Create test file and setup
+  - [x] 4.1 Create test file and setup
     - Create `src/components/layout/__tests__/AppFooter.test.tsx`
     - Set up imports for vitest, testing-library, and AppFooter component
     - _Requirements: All_
