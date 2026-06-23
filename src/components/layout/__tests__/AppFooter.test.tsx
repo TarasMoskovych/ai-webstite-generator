@@ -98,7 +98,7 @@ describe('AppFooter Component', () => {
    * Validates: Requirements 1.2, 1.3, 4.1, 4.2, 4.3, 4.4
    */
   describe('Social Links', () => {
-    const GITHUB_URL = 'https://github.com/TarasMoskovych/ai-webstite-generator';
+    const GITHUB_URL = 'https://github.com/TarasMoskovych/ai-website-generator';
     const LINKEDIN_URL = 'https://www.linkedin.com/in/taras-moskovych/';
 
     describe('GitHub Link', () => {

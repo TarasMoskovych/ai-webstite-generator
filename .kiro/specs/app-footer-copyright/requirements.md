@@ -10,7 +10,7 @@ This document specifies the requirements for the App Footer Copyright component 
 - **Full_Preview_Mode**: The /view/[id] route that renders user-generated websites as standalone full-page sites without any application UI elements.
 - **Main_App_Layout**: The root layout at src/app/layout.tsx that wraps all application pages with common UI elements and providers.
 - **View_Layout**: The special layout at src/app/view/layout.tsx that intentionally strips all application UI for rendering generated websites.
-- **GitHub_Link**: A hyperlink pointing to the developer's GitHub repository (https://github.com/TarasMoskovych/ai-webstite-generator).
+- **GitHub_Link**: A hyperlink pointing to the developer's GitHub repository (https://github.com/TarasMoskovych/ai-website-generator).
 - **LinkedIn_Link**: A hyperlink pointing to the developer's LinkedIn profile (https://www.linkedin.com/in/taras-moskovych/).
 - **Theme_Context**: The application's theme system that provides light/dark mode styling.
 

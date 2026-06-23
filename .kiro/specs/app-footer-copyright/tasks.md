@@ -32,7 +32,7 @@ The implementation is organized into:
     - _Requirements: 1.1, 3.1, 3.3_
 
   - [x] 1.4 Implement social links with CTAs
-    - Create GitHub link to `https://github.com/TarasMoskovych/ai-webstite-generator`
+    - Create GitHub link to `https://github.com/TarasMoskovych/ai-website-generator`
     - Create LinkedIn link to `https://www.linkedin.com/in/taras-moskovych/`
     - Add `target="_blank"` for new tab behavior
     - Add `rel="noopener noreferrer"` for security

@@ -115,7 +115,7 @@ interface SocialLink {
 const socialLinks: SocialLink[] = [
   {
     name: 'GitHub',
-    href: 'https://github.com/TarasMoskovych/ai-webstite-generator',
+    href: 'https://github.com/TarasMoskovych/ai-website-generator',
     ariaLabel: 'Visit the AI Website Generator GitHub repository (opens in new tab)',
     ctaText: 'Star on GitHub',
     icon: GitHubIcon,
