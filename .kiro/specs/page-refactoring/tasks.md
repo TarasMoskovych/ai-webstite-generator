@@ -12,21 +12,21 @@ The implementation follows a layered approach: utilities â†’ shared components â
 
 ## Tasks
 
-- [ ] 1. Create utilities and shared infrastructure
+- [x] 1. Create utilities and shared infrastructure
   - [x] 1.1 Create sanitizeFilename utility function
     - Create `src/utils/filename.ts` with sanitizeFilename function
     - Transform input: lowercase, remove invalid chars, replace spaces with hyphens, collapse consecutive hyphens, truncate to 50 chars
     - Return 'website' fallback for empty results
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-  - [~] 1.2 Write property test for sanitizeFilename
+  - [x] 1.2 Write property test for sanitizeFilename
     - **Property 1: sanitizeFilename Transformation Invariants**
     - Create `src/utils/filename.test.ts` with fast-check property tests
     - Test: output contains only [a-z0-9-], no consecutive hyphens, max 50 chars, non-empty
     - **Validates: Requirements 3.3, 3.4**
 
 - [ ] 2. Create shared UI components
-  - [~] 2.1 Create LoadingSpinner component
+  - [x] 2.1 Create LoadingSpinner component
     - Create `src/components/common/LoadingSpinner.tsx`
     - Accept optional `message` prop (max 100 chars, default "Loading...")
     - Accept optional `fullScreen` prop for viewport height control
@@ -39,7 +39,7 @@ The implementation follows a layered approach: utilities â†’ shared components â
     - Test spinner dimensions
     - _Requirements: 1.2, 1.3, 1.4_
 
-  - [~] 2.3 Create WebsiteNotFound component
+  - [x] 2.3 Create WebsiteNotFound component
     - Create `src/components/common/WebsiteNotFound.tsx`
     - Accept optional `onNavigateBack` callback prop
     - Render icon, heading, description, and navigation button
@@ -54,7 +54,7 @@ The implementation follows a layered approach: utilities â†’ shared components â
     - Test keyboard accessibility
     - _Requirements: 2.2, 2.3, 2.5_
 
-  - [~] 2.5 Create WebsiteCardSkeleton component
+  - [x] 2.5 Create WebsiteCardSkeleton component
     - Create `src/components/common/WebsiteCardSkeleton.tsx`
     - Render animated skeleton placeholder matching WebsiteCard dimensions
     - Use animate-pulse class for skeleton animation
