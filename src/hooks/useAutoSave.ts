@@ -109,6 +109,8 @@ export function useAutoSave<T>(config: UseAutoSaveConfig<T>): UseAutoSaveReturn 
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  // Track original values in state to avoid reading refs during render
+  const [trackedOriginalValues, setTrackedOriginalValues] = useState<T>(originalValues);
 
   // Refs for managing save operations
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -127,16 +129,19 @@ export function useAutoSave<T>(config: UseAutoSaveConfig<T>): UseAutoSaveReturn 
 
   useEffect(() => {
     originalValuesRef.current = originalValues;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing with prop changes
+    setTrackedOriginalValues(originalValues);
   }, [originalValues]);
 
-  // Compute hasUnsavedChanges using deep equality comparison
-  const hasUnsavedChanges = !deepEqual(currentValues, originalValuesRef.current);
+  // Compute hasUnsavedChanges using deep equality comparison (using state instead of ref)
+  const hasUnsavedChanges = !deepEqual(currentValues, trackedOriginalValues);
 
   /**
    * Executes the save operation
    * Handles serialization of concurrent saves
    * Requirement 5.8: Wait for current save before starting new one
    */
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- Complex async logic with refs requires manual memoization
   const executeSave = useCallback(async (values: T): Promise<void> => {
     // If already saving, queue this save for later
     // Requirement 5.8: Serialize concurrent saves
@@ -156,8 +161,9 @@ export function useAutoSave<T>(config: UseAutoSaveConfig<T>): UseAutoSaveReturn 
       // Requirement 5.5: Update lastSaved on success
       setLastSaved(new Date());
 
-      // Update original values ref after successful save
+      // Update original values ref and state after successful save
       originalValuesRef.current = values;
+      setTrackedOriginalValues(values);
     } catch (err) {
       // Requirement 5.6: Set saveError on failure
       const message = err instanceof Error ? err.message : 'Failed to save';

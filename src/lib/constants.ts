@@ -89,6 +89,7 @@ export const GENERATION_STAGE_MESSAGES = {
   generating_html: 'Generating HTML...',
   generating_css: 'Generating CSS...',
   finalizing: 'Finalizing...',
+  completed: 'Done!',
 } as const;
 
 /**

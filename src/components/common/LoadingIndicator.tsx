@@ -44,6 +44,7 @@ const STAGE_MESSAGES: Record<GenerationStage, string> = {
   generating_html: 'Generating HTML...',
   generating_css: 'Generating CSS...',
   finalizing: 'Finalizing...',
+  completed: 'Done!',
 };
 
 /**
@@ -154,6 +155,27 @@ function CodeIcon({ className }: { className?: string }) {
 }
 
 /**
+ * Check icon for completed state
+ */
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
+/**
  * LoadingIndicator component
  * Displays an animated loading indicator with generation stage, elapsed time, and cancel button
  *
@@ -174,6 +196,7 @@ export function LoadingIndicator({
   const stageMessage = STAGE_MESSAGES[stage];
   const formattedTime = useMemo(() => formatElapsedTime(elapsedTime), [elapsedTime]);
   const isTakingLong = elapsedTime >= LONG_RUNNING_THRESHOLD_MS;
+  const isCompleted = stage === 'completed';
 
   // Collapse/expand state for streaming preview
   const [isExpanded, setIsExpanded] = useState(true);
@@ -205,9 +228,9 @@ export function LoadingIndicator({
       "
       role="status"
       aria-live="polite"
-      aria-busy="true"
+      aria-busy={!isCompleted}
     >
-      {/* Animated spinner */}
+      {/* Animated spinner or completion checkmark */}
       <div
         className="
           relative
@@ -215,33 +238,52 @@ export function LoadingIndicator({
         "
         aria-hidden="true"
       >
-        {/* Outer ring */}
-        <div
-          className="
-            absolute inset-0
-            rounded-full
-            border-4 border-muted
-          "
-        />
-        {/* Spinning arc */}
-        <div
-          className="
-            absolute inset-0
-            rounded-full
-            border-4 border-transparent
-            border-t-primary
-            animate-spin
-          "
-        />
-        {/* Inner pulsing dot */}
-        <div
-          className="
-            absolute inset-4
-            rounded-full
-            bg-primary/20
-            animate-pulse
-          "
-        />
+        {isCompleted ? (
+          <>
+            {/* Completed state: green circle with checkmark */}
+            <div
+              className="
+                absolute inset-0
+                rounded-full
+                bg-green-500
+                flex items-center justify-center
+                animate-in zoom-in-50 duration-300
+              "
+            >
+              <CheckIcon className="h-8 w-8 text-white" />
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Outer ring */}
+            <div
+              className="
+                absolute inset-0
+                rounded-full
+                border-4 border-muted
+              "
+            />
+            {/* Spinning arc */}
+            <div
+              className="
+                absolute inset-0
+                rounded-full
+                border-4 border-transparent
+                border-t-primary
+                animate-spin
+              "
+            />
+            {/* Inner pulsing dot */}
+            <div
+              className="
+                absolute inset-4
+                rounded-full
+                bg-primary/20
+                animate-pulse
+              "
+            />
+          </>
+        )}
       </div>
 
       {/* Stage message */}
@@ -342,25 +384,27 @@ export function LoadingIndicator({
         </div>
       )}
 
-      {/* Cancel button (Requirement 8.3) */}
-      <button
-        type="button"
-        onClick={onCancel}
-        className="
-          inline-flex items-center justify-center gap-2
-          px-4 py-2
-          rounded-md
-          text-sm font-medium
-          bg-destructive/10 text-destructive
-          hover:bg-destructive/20
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-          transition-colors
-        "
-        aria-label="Cancel generation"
-      >
-        <XIcon className="h-4 w-4" />
-        Cancel
-      </button>
+      {/* Cancel button (Requirement 8.3) - hidden when completed */}
+      {!isCompleted && (
+        <button
+          type="button"
+          onClick={onCancel}
+          className="
+            inline-flex items-center justify-center gap-2
+            px-4 py-2
+            rounded-md
+            text-sm font-medium
+            bg-destructive/10 text-destructive
+            hover:bg-destructive/20
+            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+            transition-colors
+          "
+          aria-label="Cancel generation"
+        >
+          <XIcon className="h-4 w-4" />
+          Cancel
+        </button>
+      )}
 
       {/* Screen reader announcement */}
       <span className="sr-only">

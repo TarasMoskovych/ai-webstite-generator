@@ -63,7 +63,8 @@ function GeneratePageContent() {
     headers: Record<string, string>;
     body: unknown;
   }>({ url: '/api/generate/stream', headers: {}, body: null });
-  const [pendingStart, setPendingStart] = useState(false);
+  // Use ref for pendingStart to avoid setState in effect (lint: react-hooks/set-state-in-effect)
+  const pendingStartRef = useRef(false);
 
   // Refs for timer and request management
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -106,11 +107,11 @@ function GeneratePageContent() {
 
   // Effect to start stream after config is updated
   useEffect(() => {
-    if (pendingStart && streamConfig.body !== null && isGenerating) {
-      setPendingStart(false);
+    if (pendingStartRef.current && streamConfig.body !== null && isGenerating) {
+      pendingStartRef.current = false;
       start();
     }
-  }, [pendingStart, streamConfig.body, isGenerating, start]);
+  }, [streamConfig.body, isGenerating, start]);
 
   const hasContent = useMemo(() => {
     return activeMode === 'text' ? textValue.trim().length > 0 : screenshotFile !== null;
@@ -166,7 +167,13 @@ function GeneratePageContent() {
           };
 
           const saved = await saveWebsite(user.uid, websiteData, user.displayName || 'Anonymous');
-          setGenerationStage('processing_input');
+
+          // Show completed state with checkmark before redirecting
+          setGenerationStage('completed');
+
+          // Brief delay to show the completion animation
+          await new Promise(resolve => setTimeout(resolve, 800));
+
           setElapsedTime(0);
           setIsGenerating(false);
           resultRef.current = null;
@@ -186,15 +193,23 @@ function GeneratePageContent() {
     };
     processResult();
   }, [isStreaming, isGenerating, user, activeMode, textValue, router, stopTimer]);
+  // Track if we've handled the current streamError to prevent re-triggering on retry
+  const lastHandledErrorRef = useRef<string | null>(null);
 
   // Handle stream errors
+  // Only process if this is a new error we haven't handled yet
   useEffect(() => {
-    if (streamError && !isStreaming && isGenerating) {
+    if (streamError && !isStreaming && isGenerating && streamError !== lastHandledErrorRef.current) {
+      lastHandledErrorRef.current = streamError;
       stopTimer();
       setGenerationStage('processing_input');
       setElapsedTime(0);
       setIsGenerating(false);
       setGenerationError(streamError.includes('HTTP error') ? 'Generation failed' : streamError);
+    }
+    // Reset the handled error ref when streamError is cleared (new generation started)
+    if (!streamError) {
+      lastHandledErrorRef.current = null;
     }
   }, [streamError, isStreaming, isGenerating, stopTimer]);
 
@@ -204,7 +219,7 @@ function GeneratePageContent() {
     setGenerationStage('processing_input');
     setElapsedTime(0);
     setIsGenerating(false);
-    setPendingStart(false);
+    pendingStartRef.current = false;
     resultRef.current = null;
     isProcessingRef.current = false;
   }, [cancel, stopTimer]);
@@ -246,7 +261,7 @@ function GeneratePageContent() {
           headers: { Authorization: `Bearer ${token}` },
           body,
         });
-        setPendingStart(true);
+        pendingStartRef.current = true;
       } catch (error) {
         stopTimer();
         setGenerationStage('processing_input');

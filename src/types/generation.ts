@@ -10,7 +10,8 @@ export type GenerationStage =
   | 'processing_input'
   | 'generating_html'
   | 'generating_css'
-  | 'finalizing';
+  | 'finalizing'
+  | 'completed';
 
 /**
  * State of the generation process

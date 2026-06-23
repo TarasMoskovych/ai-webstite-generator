@@ -183,9 +183,13 @@ export function ThemeProvider({
     const initialTheme = stored ?? defaultTheme;
     const resolved = resolveTheme(initialTheme);
 
-    setThemeState(initialTheme);
-    setResolvedTheme(resolved);
+    // Apply theme to document (external system update, not state)
     applyThemeToDocument(resolved);
+
+    // Synchronizing with external storage (localStorage) on mount
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Necessary for hydration from localStorage
+    setThemeState((prev) => (prev !== initialTheme ? initialTheme : prev));
+    setResolvedTheme((prev) => (prev !== resolved ? resolved : prev));
   }, [defaultTheme, storageKey]);
 
   /**

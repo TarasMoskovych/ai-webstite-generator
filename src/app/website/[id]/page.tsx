@@ -57,8 +57,8 @@ function WebsitePageContent({ websiteId }: { websiteId: string }) {
   const [isShowcased, setIsShowcased] = useState(false);
   const [isTogglingShowcase, setIsTogglingShowcase] = useState(false);
 
-  const originalHtmlRef = useRef('');
-  const originalCssRef = useRef('');
+  const [originalHtml, setOriginalHtml] = useState('');
+  const [originalCss, setOriginalCss] = useState('');
   const autoBeautifyTriggeredRef = useRef(false);
 
   const fetchWebsite = useCallback(async () => {
@@ -77,8 +77,8 @@ function WebsitePageContent({ websiteId }: { websiteId: string }) {
       setEditedHtml(result.html);
       setEditedCss(result.css);
       setIsShowcased(result.isShowcased);
-      originalHtmlRef.current = result.html;
-      originalCssRef.current = result.css;
+      setOriginalHtml(result.html);
+      setOriginalCss(result.css);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load website');
     } finally {
@@ -86,18 +86,21 @@ function WebsitePageContent({ websiteId }: { websiteId: string }) {
     }
   }, [websiteId, user]);
 
-  useEffect(() => { fetchWebsite(); }, [fetchWebsite]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Data fetching requires state updates
+    void fetchWebsite();
+  }, [fetchWebsite]);
 
   const handleSaveModifications = useCallback(async (values: { html: string; css: string }) => {
     if (!website) return;
     await websiteRepository.update(website.id, values);
-    originalHtmlRef.current = values.html;
-    originalCssRef.current = values.css;
+    setOriginalHtml(values.html);
+    setOriginalCss(values.css);
   }, [website]);
 
   const { hasUnsavedChanges, isSaving, saveError, lastSaved, save: saveModifications } = useAutoSave({
     currentValues: { html: editedHtml, css: editedCss },
-    originalValues: { html: originalHtmlRef.current, css: originalCssRef.current },
+    originalValues: { html: originalHtml, css: originalCss },
     onSave: handleSaveModifications,
     delay: AUTO_SAVE_DELAY,
   });
@@ -143,8 +146,8 @@ function WebsitePageContent({ websiteId }: { websiteId: string }) {
   const handleOriginalUpdated = useCallback((html: string, css: string) => {
     setEditedHtml(html);
     setEditedCss(css);
-    originalHtmlRef.current = html;
-    originalCssRef.current = css;
+    setOriginalHtml(html);
+    setOriginalCss(css);
   }, []);
 
   const { handleReplaceOriginal, handleSaveAsNew } = useBeautifySave({

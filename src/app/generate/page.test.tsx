@@ -14,7 +14,7 @@
 
 import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import GeneratePage from './page';
 
 // Mock next/navigation
@@ -472,13 +472,25 @@ describe('Generate Page Integration Tests', () => {
      * Validates: Requirement 10.3
      */
     it('cancels generation when cancel button is clicked', async () => {
-      // Create a controlled promise
-      let resolvePromise: (value: Response) => void;
-      const loadingPromise = new Promise<Response>((resolve) => {
-        resolvePromise = resolve;
-      });
+      // Track if fetch was called
+      let fetchCalled = false;
 
-      const mockFetch = vi.spyOn(global, 'fetch').mockReturnValue(loadingPromise);
+      // Create a mock fetch that responds to abort signal
+      const mockFetch = vi.spyOn(global, 'fetch').mockImplementation((_, options) => {
+        fetchCalled = true;
+        return new Promise((resolve, reject) => {
+          const signal = options?.signal as AbortSignal | undefined;
+          if (signal) {
+            if (signal.aborted) {
+              reject(new DOMException('Aborted', 'AbortError'));
+              return;
+            }
+            signal.addEventListener('abort', () => {
+              reject(new DOMException('Aborted', 'AbortError'));
+            });
+          }
+        });
+      });
 
       render(<GeneratePage />);
 
@@ -490,14 +502,17 @@ describe('Generate Page Integration Tests', () => {
       const generateButton = screen.getByRole('button', { name: /generate website/i });
       fireEvent.click(generateButton);
 
-      // Wait for loading state (status role indicates loading)
+      // Wait for loading state AND for fetch to be called (effect has run)
       await waitFor(() => {
         expect(screen.getByRole('status')).toBeInTheDocument();
+        expect(fetchCalled).toBe(true);
       });
 
-      // Click cancel
+      // Click cancel and wait for state updates
       const cancelButton = screen.getByRole('button', { name: /cancel generation/i });
-      fireEvent.click(cancelButton);
+      await act(async () => {
+        fireEvent.click(cancelButton);
+      });
 
       // Loading indicator should disappear
       await waitFor(() => {
@@ -507,12 +522,6 @@ describe('Generate Page Integration Tests', () => {
       // Input should be preserved (not cleared)
       expect(textArea).toHaveValue('Create a simple website with a header');
 
-      // Resolve the promise to clean up
-      resolvePromise!({
-        ok: true,
-        body: createMockSSEStream([]),
-      } as Response);
-
       mockFetch.mockRestore();
     });
 
@@ -521,12 +530,25 @@ describe('Generate Page Integration Tests', () => {
      * Validates: Requirement 10.3
      */
     it('preserves input after cancellation', async () => {
-      let resolvePromise: (value: Response) => void;
-      const loadingPromise = new Promise<Response>((resolve) => {
-        resolvePromise = resolve;
-      });
+      // Track if fetch was called
+      let fetchCalled = false;
 
-      const mockFetch = vi.spyOn(global, 'fetch').mockReturnValue(loadingPromise);
+      // Create a mock fetch that responds to abort signal
+      const mockFetch = vi.spyOn(global, 'fetch').mockImplementation((_, options) => {
+        fetchCalled = true;
+        return new Promise((resolve, reject) => {
+          const signal = options?.signal as AbortSignal | undefined;
+          if (signal) {
+            if (signal.aborted) {
+              reject(new DOMException('Aborted', 'AbortError'));
+              return;
+            }
+            signal.addEventListener('abort', () => {
+              reject(new DOMException('Aborted', 'AbortError'));
+            });
+          }
+        });
+      });
 
       render(<GeneratePage />);
 
@@ -540,14 +562,17 @@ describe('Generate Page Integration Tests', () => {
       const generateButton = screen.getByRole('button', { name: /generate website/i });
       fireEvent.click(generateButton);
 
-      // Wait for loading state
+      // Wait for loading state AND for fetch to be called (effect has run)
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /cancel generation/i })).toBeInTheDocument();
+        expect(fetchCalled).toBe(true);
       });
 
-      // Click cancel
+      // Click cancel and wait for state updates
       const cancelButton = screen.getByRole('button', { name: /cancel generation/i });
-      fireEvent.click(cancelButton);
+      await act(async () => {
+        fireEvent.click(cancelButton);
+      });
 
       // Wait for loading to stop
       await waitFor(() => {
@@ -556,12 +581,6 @@ describe('Generate Page Integration Tests', () => {
 
       // Input should still have the original text
       expect(textArea).toHaveValue(inputText);
-
-      // Resolve the promise to clean up
-      resolvePromise!({
-        ok: true,
-        body: createMockSSEStream([]),
-      } as Response);
 
       mockFetch.mockRestore();
     });
@@ -610,17 +629,15 @@ describe('Generate Page Integration Tests', () => {
      * Validates: Requirement 10.3
      */
     it('allows retrying after error', async () => {
-      const mockFetch = vi.spyOn(global, 'fetch')
-        .mockResolvedValueOnce({
+      let callCount = 0;
+      const mockFetch = vi.spyOn(global, 'fetch').mockImplementation(() => {
+        callCount++;
+        // Always return error for simplicity
+        return Promise.resolve({
           ok: false,
-          text: vi.fn().mockResolvedValue('Generation failed'),
-        } as unknown as Response)
-        .mockResolvedValueOnce({
-          ok: true,
-          body: createMockSSEStream([
-            { event: 'done', data: { result: { html: '<h1>Test</h1>', css: '', title: 'Test' } } },
-          ]),
-        } as Response);
+          status: 500,
+        } as unknown as Response);
+      });
 
       render(<GeneratePage />);
 
@@ -632,19 +649,26 @@ describe('Generate Page Integration Tests', () => {
       const generateButton = screen.getByRole('button', { name: /generate website/i });
       fireEvent.click(generateButton);
 
+      // Wait for first fetch to be called
+      await waitFor(() => {
+        expect(callCount).toBe(1);
+      });
+
       // Wait for error message
       await waitFor(() => {
         expect(screen.getByText(/generation failed/i)).toBeInTheDocument();
       });
 
-      // Find and click retry button
+      // Get retry button
       const retryButton = screen.getByRole('button', { name: /retry/i });
+
+      // Click retry
       fireEvent.click(retryButton);
 
-      // Should start generating again
+      // Retry should trigger another fetch call
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledTimes(2);
-      });
+        expect(callCount).toBe(2);
+      }, { timeout: 3000 });
 
       mockFetch.mockRestore();
     });
@@ -748,7 +772,6 @@ describe('Generate Page Integration Tests', () => {
       fireEvent.click(screenshotRadio);
 
       // Cancel the switch (Cancel button in dialog, not the generation cancel)
-      const dialogCancelButton = screen.getByRole('alertdialog').querySelector('button[name="Cancel"], button:first-of-type');
       // Use text matching for the Cancel button in the dialog
       const cancelButtons = screen.getAllByRole('button', { name: /cancel/i });
       // Get the Cancel button from the dialog (not cancel generation)

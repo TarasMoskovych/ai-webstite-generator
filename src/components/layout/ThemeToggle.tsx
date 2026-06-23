@@ -132,12 +132,13 @@ const themeOptions: ThemeOption[] = [
 ];
 
 /**
- * Get the icon component for the current theme
+ * Theme icon components map for direct access (avoids creating components during render)
  */
-function getThemeIcon(theme: Theme): React.ComponentType<{ className?: string }> {
-  const option = themeOptions.find((opt) => opt.value === theme);
-  return option?.icon ?? MonitorIcon;
-}
+const themeIconMap: Record<Theme, React.ComponentType<{ className?: string }>> = {
+  light: SunIcon,
+  dark: MoonIcon,
+  system: MonitorIcon,
+};
 
 /**
  * Get the label for the current theme
@@ -166,8 +167,8 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Get the current theme icon
-  const CurrentIcon = getThemeIcon(theme);
+  // Get the current theme icon using direct map lookup (not function call during render)
+  const CurrentIcon = themeIconMap[theme];
 
   /**
    * Toggle dropdown menu

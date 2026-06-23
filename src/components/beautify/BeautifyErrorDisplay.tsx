@@ -206,21 +206,14 @@ function ZapIcon({ className }: { className?: string }) {
 }
 
 /**
- * Get the appropriate icon for the error category
+ * Error icon components map for direct access (avoids creating components during render)
  */
-function getErrorIcon(category: BeautifyErrorCategory): React.ComponentType<{ className?: string }> {
-  switch (category) {
-    case 'network':
-      return WifiOffIcon;
-    case 'ai':
-      return ZapIcon;
-    case 'validation':
-      return AlertCircleIcon;
-    case 'general':
-    default:
-      return AlertCircleIcon;
-  }
-}
+const errorIconMap: Record<BeautifyErrorCategory, React.ComponentType<{ className?: string }>> = {
+  network: WifiOffIcon,
+  ai: ZapIcon,
+  validation: AlertCircleIcon,
+  general: AlertCircleIcon,
+};
 
 /**
  * Get category-specific styling classes
@@ -277,7 +270,8 @@ function ErrorContent({
   styles: ReturnType<typeof getCategoryStyles>;
   dismissButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }) {
-  const ErrorIcon = getErrorIcon(error.category);
+  // Use direct map lookup instead of function call during render
+  const ErrorIcon = errorIconMap[error.category] ?? errorIconMap.general;
 
   return (
     <>
