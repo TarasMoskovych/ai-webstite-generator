@@ -19,6 +19,7 @@ vi.mock('@/components/auth', () => ({
 // Mock the layout module
 vi.mock('@/components/layout', () => ({
   AppHeader: () => <header data-testid="app-header">App Header</header>,
+  AppFooter: () => <footer data-testid="mock-footer">Mock Footer</footer>,
 }));
 
 // Mock the WebsiteCard component

@@ -103,7 +103,7 @@ The implementation is organized into:
     - Test that custom className is applied to footer element
     - _Requirements: Component API_
 
-- [~] 5. Final checkpoint - Ensure all tests pass
+- [x] 5. Final checkpoint - Ensure all tests pass
   - Run `npm run test` to verify all tests pass
   - Run `npm run lint` to verify no linting errors
   - Ensure all tests pass, ask the user if questions arise

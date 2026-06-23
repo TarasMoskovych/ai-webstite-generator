@@ -45,6 +45,7 @@ vi.mock('@/components/layout', () => ({
       {user && <span data-testid="logged-in-user">{user.displayName}</span>}
     </header>
   ),
+  AppFooter: () => <footer data-testid="mock-footer">Mock Footer</footer>,
 }));
 
 // Mock the WebsiteCard component

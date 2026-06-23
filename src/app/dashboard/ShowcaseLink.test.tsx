@@ -64,6 +64,7 @@ vi.mock('@/components/layout', () => ({
   ),
   ThemeToggle: () => <button data-testid="mock-theme-toggle">Theme</button>,
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  AppFooter: () => <footer data-testid="mock-footer">Mock Footer</footer>,
 }));
 
 // Import DashboardPage after mocks are set up
