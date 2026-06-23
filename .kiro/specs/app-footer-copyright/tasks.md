@@ -66,18 +66,18 @@ The implementation is organized into:
   - Verify footer does NOT appear on /view/[id] routes (ViewLayout excludes it by design)
   - Ask the user if questions arise
 
-- [ ] 4. Write unit tests
+- [x] 4. Write unit tests
   - [x] 4.1 Create test file and setup
     - Create `src/components/layout/__tests__/AppFooter.test.tsx`
     - Set up imports for vitest, testing-library, and AppFooter component
     - _Requirements: All_
 
-  - [~] 4.2 Write copyright display tests
+  - [x] 4.2 Write copyright display tests
     - Test that current year is displayed in copyright
     - Test that developer name "Taras Moskovych" is displayed
     - _Requirements: 1.1_
 
-  - [~] 4.3 Write social links tests
+  - [x] 4.3 Write social links tests
     - Test GitHub link has correct href
     - Test GitHub link has `target="_blank"`
     - Test GitHub link has `rel="noopener noreferrer"`
@@ -88,18 +88,18 @@ The implementation is organized into:
     - Test LinkedIn link has descriptive aria-label
     - _Requirements: 1.2, 1.3, 4.1, 4.2, 4.3, 4.4_
 
-  - [~] 4.4 Write call-to-action text tests
+  - [x] 4.4 Write call-to-action text tests
     - Test "Star on GitHub" text is displayed
     - Test "Connect on LinkedIn" text is displayed
     - _Requirements: 1.4, 1.5_
 
-  - [~] 4.5 Write accessibility and semantic tests
+  - [x] 4.5 Write accessibility and semantic tests
     - Test footer uses semantic `<footer>` element
     - Test footer has `role="contentinfo"`
     - Test icons have `aria-hidden="true"`
     - _Requirements: 4.5_
 
-  - [~] 4.6 Write className prop test
+  - [x] 4.6 Write className prop test
     - Test that custom className is applied to footer element
     - _Requirements: Component API_
 
